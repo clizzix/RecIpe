@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { MdAdd } from 'react-icons/md';
+import { convertToGrams } from '../services/utils';
 
 const AddIngredientForm = ({ onAdd }) => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -13,17 +15,22 @@ const AddIngredientForm = ({ onAdd }) => {
         setSearchTerm(query);
 
         if (query.length > 2) {
-            const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${query}&search_simple=1&action=process&fields=product_name,nutriments,image_front_small_url,code&json=1&page_size=5`;
+            const baseUrl =
+                import.meta.env.VITE_FOOD_FACTS_URL ||
+                'https://world.openfoodfacts.org';
+            const url = `${baseUrl}/cgi/search.pl?search_terms=${query}&search_simple=1&action=process&fields=product_name,nutriments,image_front_small_url,code&json=1&page_size=5`;
 
             try {
-                const res = await fetch(url, {
-                    headers: { 'User-Agent': 'MyRecipeApp/1.0' },
-                });
+                const res = await fetch(url);
+                if (!res.ok) throw new Error(`API Error: ${res.status}`);
                 const data = await res.json();
                 setSuggestions(data.products || []);
             } catch (err) {
                 console.error('Search error:', err);
+                setSuggestions([]);
             }
+        } else {
+            setSuggestions([]);
         }
     };
 
@@ -47,23 +54,21 @@ const AddIngredientForm = ({ onAdd }) => {
     };
 
     return (
-        <div
-            className="add-ingredient-container"
-            style={{ border: '1px solid #ccc', padding: '1rem' }}
-        >
-            <h4>Add Ingredient</h4>
+        <div className="add-ingredient-container rounded-md bg-base-100 shadow-md p-4">
+            <h4 className="font-bold mb-4">Zutat hinzufügen:</h4>
 
             {/* 1. Search Input */}
             <input
                 type="text"
-                placeholder="Search product (e.g. Oats)"
+                placeholder="Suche Produkte..."
                 value={searchTerm}
                 onChange={handleSearch}
+                className="input w-full"
             />
 
             {/* 2. Suggestions Dropdown */}
             {suggestions.length > 0 && !selectedProduct && (
-                <ul className="suggestions">
+                <ul className="suggestions pt-4">
                     {suggestions.map((p) => (
                         <li
                             key={p.code}
@@ -80,25 +85,28 @@ const AddIngredientForm = ({ onAdd }) => {
             {selectedProduct && (
                 <div style={{ marginTop: '10px' }}>
                     <p>
-                        Selected:{' '}
-                        <strong>{selectedProduct.product_name}</strong>
+                        Auswahl: <strong>{selectedProduct.product_name}</strong>
                     </p>
                     <input
                         type="number"
                         value={quantity}
                         onChange={(e) => setQuantity(Number(e.target.value))}
                         style={{ width: '60px' }}
+                        className="input"
                     />
                     <select
                         value={unit}
                         onChange={(e) => setUnit(e.target.value)}
+                        className="input text-end w-1/8"
                     >
-                        <option value="gram">Grams (g)</option>
-                        <option value="cup">Cups</option>
-                        <option value="tablespoon">Tbsp</option>
-                        <option value="oz">Ounces (oz)</option>
+                        <option value="gram">Gramm (g)</option>
+                        <option value="cup">Tassen</option>
+                        <option value="tablespoon">Teelöffel</option>
+                        <option value="oz">Unzen (oz)</option>
                     </select>
-                    <button onClick={handleAddItem}>Add to Recipe</button>
+                    <button className="btn btn-primary" onClick={handleAddItem}>
+                        <MdAdd />
+                    </button>
                 </div>
             )}
         </div>

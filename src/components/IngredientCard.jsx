@@ -32,7 +32,7 @@ const IngredientCard = ({ ingredient }) => {
                     </h4>
                     <div className="grid grid-cols-2 gap-2 text-center">
                         <div className="bg-blue-50 p-2 rounded">
-                            <p className="text-xs text-blue-600 font-bold">
+                            <p className="text-xs text-primary font-bold">
                                 {Math.round(ingredient.nutriments.energy_100g)}
                                 kcal
                             </p>
@@ -41,7 +41,7 @@ const IngredientCard = ({ ingredient }) => {
                             </p>
                         </div>
                         <div className="bg-orange-50 p-2 rounded">
-                            <p className="text-xs text-orange-600 font-bold">
+                            <p className="text-xs text-warning font-bold">
                                 {ingredient.nutriments.fat_100g}g
                             </p>
                             <p className="text-[10px] text-black uppercase">
@@ -49,15 +49,16 @@ const IngredientCard = ({ ingredient }) => {
                             </p>
                         </div>
                         <div className="bg-red-50 p-2 rounded">
-                            <p className="text-xs text-red-600 font-bold">
+                            <p className="text-xs text-error font-bold">
+                                {ingredient.nutriments.carbohydrates_100g}g /{' '}
                                 {ingredient.nutriments.sugars_100g}g
                             </p>
                             <p className="text-[10px] text-black uppercase">
-                                Zucker
+                                Carbs / Zucker
                             </p>
                         </div>
-                        <div className="bg-red-50 p-2 rounded">
-                            <p className="text-xs text-green-600 font-bold">
+                        <div className="bg-green-50 p-2 rounded">
+                            <p className="text-xs text-success font-bold">
                                 {ingredient.nutriments.proteins_100g}g
                             </p>
                             <p className="text-[10px] text-black uppercase">

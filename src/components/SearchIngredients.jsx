@@ -15,12 +15,7 @@ const SearchIngredients = () => {
         const url = `${baseUrl}/cgi/search.pl?search_terms=${query}&search_simple=1&action=process&json=1&fields=product_name,image_url,nutriments&page_size=5`;
 
         try {
-            const res = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'User-Agent': `RecIpe/1.0 (${import.meta.env.VITE_AGENT_MAIL})`,
-                },
-            });
+            const res = await fetch(url);
             if (!res.ok) throw new Error(`API Error: ${res.status}`);
             const data = await res.json();
             setResults(data.products || []);
@@ -36,7 +31,7 @@ const SearchIngredients = () => {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Suche (Mehl, Tomate...)"
-                    className="input input-bordered w-24 md:w-auto"
+                    className="input input-bordered min-w-xl md:w-auto"
                 />
                 <button onClick={fetchIngredient} className="btn btn-accent">
                     <MdSearch size={24} />

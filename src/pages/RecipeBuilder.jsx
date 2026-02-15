@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AddIngredientForm from '../components/AddIngredientForm';
 import RecipeSummary from '../components/RecipeSummary';
+import { MdDelete } from 'react-icons/md';
 
 const RecipeBuilder = () => {
     const [recipeIngredients, setRecipeIngredients] = useState([]);
@@ -17,12 +18,24 @@ const RecipeBuilder = () => {
     };
 
     return (
-        <div className="App">
-            <h1>My Recipe Builder</h1>
+        <div className="flex flex-col bg-base-300 max-w-5xl mx-auto p-8 gap-4 rounded-md shadow-md">
+            <h1 className="font-extrabold text-3xl">Rezeptblock</h1>
+            <form className="bg-base-100 p-4 flex flex-col items-center gap-4">
+                <input
+                    type="file"
+                    className="file-input file-input-accent w-full"
+                />
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Rezeptname"
+                    className="input w-full"
+                />
+            </form>
 
             <AddIngredientForm onAdd={addIngredientToRecipe} />
-            <div className="recipe-content">
-                <h3>Ingredients List</h3>
+            <div className="recipe-content min-w-3xl p-8 justify-center">
+                <h3 className="font-bold">Zutaten</h3>
                 <ul style={{ listStyle: 'none', padding: 0 }}>
                     {recipeIngredients.map((ing, i) => (
                         <li
@@ -49,23 +62,19 @@ const RecipeBuilder = () => {
 
                             <button
                                 onClick={() => removeIngredient(i)}
-                                style={{
-                                    backgroundColor: '#ff4d4d',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                    padding: '5px 10px',
-                                    cursor: 'pointer',
-                                }}
+                                className="btn btn-error text-white"
                             >
-                                Remove
+                                <MdDelete size={24} />
                             </button>
                         </li>
                     ))}
                 </ul>
 
                 {recipeIngredients.length === 0 && (
-                    <p>No ingredients added yet. Start searching above!</p>
+                    <p>
+                        Keine Zutaten hinzugefügt! Wähle oben deine Nahrung
+                        aus...
+                    </p>
                 )}
             </div>
 

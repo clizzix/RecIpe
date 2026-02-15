@@ -1,9 +1,6 @@
-const url = import.meta.env.VITE_FOOD_FACTS_URL;
-const agent = import.meta.env.VITE_AGENT_MAIL;
-
 const UNIT_CONVERSIONS = {
     // Base unit is Grams
-    gram: 1,
+    gramm: 1,
     kg: 1000,
     oz: 28.35,
     // Volume approximations (Standard averages)

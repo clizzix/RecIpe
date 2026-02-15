@@ -23,33 +23,21 @@ const RecipeSummary = ({ ingredients }) => {
     }, [ingredients]);
 
     return (
-        <div
-            style={{
-                padding: '20px',
-                border: '1px solid #ddd',
-                borderRadius: '8px',
-            }}
-        >
-            <h3>Gesamte Nährwerte</h3>
-            <hr />
-            <div
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '10px',
-                }}
-            >
-                <p>
+        <div className="p-4">
+            <h3 className="pb-2 font-bold">Gesamte Nährwerte</h3>
+
+            <div className="grid grid-cols-2 gap-2">
+                <p className="bg-primary p-4 shadow-md rounded-md">
                     <strong>Kalorien:</strong> {Math.round(totals.calories)}{' '}
                     kcal
                 </p>
-                <p>
+                <p className="bg-warning p-4 shadow-md rounded-md">
                     <strong>Fett:</strong> {totals.fat.toFixed(1)}g
                 </p>
-                <p>
+                <p className="bg-error p-4 shadow-md rounded-md">
                     <strong>Zucker:</strong> {totals.sugar.toFixed(1)}g
                 </p>
-                <p>
+                <p className="bg-success p-4 shadow-md rounded-md">
                     <strong>Protein:</strong> {totals.protein.toFixed(1)}g
                 </p>
             </div>
