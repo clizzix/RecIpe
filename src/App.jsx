@@ -1,26 +1,20 @@
-import React from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-import Navbar from './components/Navbar';
-import SearchIngredients from './components/SearchIngredients';
+import { BrowserRouter, Routes, Route } from 'react-router';
+import MainLayout from './layout/MainLayout';
+import Home from './pages/Home';
+import RecipeBuilder from './pages/RecipeBuilder';
+import User from './pages/User';
 
 const App = () => {
     return (
-        <div>
-            <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick={false}
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="dark"
-            />
-            <Navbar />
-            <SearchIngredients />
-        </div>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<MainLayout />}>
+                    <Route index element={<Home />} />
+                    <Route path="recipebuilder" element={<RecipeBuilder />} />
+                    <Route path="user" element={<User />} />
+                </Route>
+            </Routes>
+        </BrowserRouter>
     );
 };
 
