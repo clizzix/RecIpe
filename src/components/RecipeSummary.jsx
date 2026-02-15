@@ -14,11 +14,12 @@ const RecipeSummary = ({ ingredients }) => {
                 return {
                     calories: acc.calories + calc(nuts['energy-kcal_100g']),
                     fat: acc.fat + calc(nuts['fat_100g']),
+                    carbs: acc.carbs + calc(nuts['carbohydrates_100g']),
                     sugar: acc.sugar + calc(nuts['sugars_100g']),
                     protein: acc.protein + calc(nuts['proteins_100g']),
                 };
             },
-            { calories: 0, fat: 0, sugar: 0, protein: 0 },
+            { calories: 0, fat: 0, carbs: 0, sugar: 0, protein: 0 },
         );
     }, [ingredients]);
 
@@ -35,7 +36,8 @@ const RecipeSummary = ({ ingredients }) => {
                     <strong>Fett:</strong> {totals.fat.toFixed(1)}g
                 </p>
                 <p className="bg-error p-4 shadow-md rounded-md">
-                    <strong>Zucker:</strong> {totals.sugar.toFixed(1)}g
+                    <strong>Carbs / Zucker:</strong> {totals.carbs.toFixed(1)}g
+                    /{totals.sugar.toFixed(1)}g
                 </p>
                 <p className="bg-success p-4 shadow-md rounded-md">
                     <strong>Protein:</strong> {totals.protein.toFixed(1)}g

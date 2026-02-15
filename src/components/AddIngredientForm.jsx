@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { MdAdd } from 'react-icons/md';
 import { convertToGrams } from '../services/utils';
+import IngredientCard from './IngredientCard';
 
 const AddIngredientForm = ({ onAdd }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
-    const [unit, setUnit] = useState('gram');
+    const [unit, setUnit] = useState('gramm');
 
     // Search API for products
     const handleSearch = async (e) => {
@@ -37,7 +38,7 @@ const AddIngredientForm = ({ onAdd }) => {
     const handleAddItem = () => {
         if (!selectedProduct) return;
 
-        // Use our conversion helper (from previous step) to get the weight
+        // Use the conversion helper to get the weight
         const weightInGrams = convertToGrams(quantity, unit);
 
         onAdd({

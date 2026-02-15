@@ -14,12 +14,12 @@ const Navbar = () => {
                 <div className="flex gap-2 items-center">
                     <Link
                         to="/recipebuilder"
-                        className="text-accent btn btn-outline"
+                        className="text-black btn btn-accent"
                     >
-                        <MdReceipt size={36} />
+                        <MdReceipt size={24} />
                     </Link>
-                    <Link to="/user" className="text-accent btn btn-outline">
-                        <MdPerson size={36} />
+                    <Link to="/user" className="text-black btn btn-accent">
+                        <MdPerson size={24} />
                     </Link>
                 </div>
             </div>

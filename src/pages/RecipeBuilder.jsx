@@ -21,7 +21,11 @@ const RecipeBuilder = () => {
         <div className="flex flex-col bg-base-300 max-w-5xl mx-auto p-8 gap-4 rounded-md shadow-md">
             <h1 className="font-extrabold text-3xl">Rezeptblock</h1>
             <form className="bg-base-100 p-4 flex flex-col items-center gap-4">
+                <label htmlFor="picture" className="self-start font-bold">
+                    Lade ein Bild deiner Mahlzeit hoch!
+                </label>
                 <input
+                    name="picture"
                     type="file"
                     className="file-input file-input-accent w-full"
                 />
