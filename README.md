@@ -1,16 +1,46 @@
-# React + Vite
+# 🥗 Rezeptblock (Recipe Builder)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, React-based recipe building application that utilizes the **Open Food Facts API** to provide real-time nutritional data. This app allows users to search for real-world products, calculate total recipe macros, and organize their culinary creations.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Real-time Nutrition:** Fetches data from the Open Food Facts database.
+- **Macro Calculations:** Automatically sums Calories, Proteins, Fats, and Sugars based on ingredient weight.
+- **Unit Conversion:** Intelligent conversion between grams, cups, and tablespoons.
+- **Local Persistence:** Your recipe progress is saved automatically to your browser's local storage.
+- **Responsive UI:** Styled with TailwindCSS and DaisyUI for a sleek, mobile-friendly experience.
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Framework:** [React.js](https://reactjs.org/)
+- **Styling:** [TailwindCSS](https://tailwindcss.com/) & [DaisyUI](https://daisyui.com/)
+- **Routing:** [React Router](https://reactrouter.com/)
+- **Icons:** [React Icons](https://react-icons.github.io/react-icons/)
+- **Notifications:** [React-Toastify](https://fkhadra.github.io/react-toastify/)
+- **Loaders:** [React-Spinners](https://www.davidhu.io/react-spinners/)
+- **API:** [Open Food Facts JSON API](https://world.openfoodfacts.org/data)
 
-## Expanding the ESLint configuration
+## 🚀 Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm
+
+### Installation
+
+1. Clone the repository:
+    ```bash
+    git clone [https://github.com/yourusername/rezeptblock.git](https://github.com/yourusername/rezeptblock.git)
+    ```
+2. Install dependencies
+    ```bash
+    npm i
+    npm i react-router
+    npm i --save react-toastify
+    npm i --save react-spinners
+    ```
+3. Start the development Server
+    ```bash
+    npm run dev
+    ```

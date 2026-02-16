@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AddIngredientForm from '../components/AddIngredientForm';
 import RecipeSummary from '../components/RecipeSummary';
 import { MdDelete } from 'react-icons/md';
 
 const RecipeBuilder = () => {
-    const [recipeIngredients, setRecipeIngredients] = useState([]);
+    const [recipeIngredients, setRecipeIngredients] = useState(
+        JSON.parse(localStorage.getItem('myRecipe') || '[]'),
+    );
 
     const addIngredientToRecipe = (newIngredient) => {
         setRecipeIngredients([...recipeIngredients, newIngredient]);
@@ -16,6 +18,10 @@ const RecipeBuilder = () => {
             prevIngredients.filter((_, index) => index !== indexToRemove),
         );
     };
+
+    useEffect(() => {
+        localStorage.setItem('myRecipe', JSON.stringify(recipeIngredients));
+    }, [recipeIngredients]);
 
     return (
         <div className="flex flex-col bg-base-300 max-w-5xl mx-auto p-8 gap-4 rounded-md shadow-md">
