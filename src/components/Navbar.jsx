@@ -4,8 +4,8 @@ import { MdReceipt, MdPerson, MdHome } from 'react-icons/md';
 
 const Navbar = () => {
     return (
-        <div>
-            <div className="navbar bg-base-300 shadow-sm justify-center gap-2">
+        <div className="max-w-full">
+            <div className="navbar bg-base-300 shadow-sm justify-end gap-2">
                 <Link
                     to="/"
                     className="text-black btn btn-accent font-bold text-2xl hover:translate-y-0.5"
