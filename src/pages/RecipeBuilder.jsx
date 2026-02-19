@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import AddIngredientForm from '../components/AddIngredientForm';
 import RecipeSummary from '../components/RecipeSummary';
 import { MdDelete } from 'react-icons/md';
+import { toast } from 'react-toastify';
 
 const RecipeBuilder = () => {
     const [recipeIngredients, setRecipeIngredients] = useState(
@@ -17,6 +18,7 @@ const RecipeBuilder = () => {
         setRecipeIngredients((prevIngredients) =>
             prevIngredients.filter((_, index) => index !== indexToRemove),
         );
+        toast.error('Zutat entfernt!');
     };
 
     useEffect(() => {
@@ -31,13 +33,19 @@ const RecipeBuilder = () => {
                     Lade ein Bild deiner Mahlzeit hoch!
                 </label>
                 <input
+                    id="picture"
                     name="picture"
                     type="file"
                     className="file-input file-input-accent w-full"
                 />
+                <label htmlFor="name" className="sr-only">
+                    Rezeptname
+                </label>
                 <input
+                    id="name"
                     type="text"
                     name="name"
+                    autoComplete="off"
                     placeholder="Rezeptname"
                     className="input w-full"
                 />

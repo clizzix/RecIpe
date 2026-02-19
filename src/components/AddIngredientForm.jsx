@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { MdAdd } from 'react-icons/md';
 import { convertToGrams } from '../services/utils';
 import IngredientCard from './IngredientCard';
+import { ClipLoader } from 'react-spinners';
+import { toast } from 'react-toastify';
 
 const AddIngredientForm = ({ onAdd }) => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -9,12 +11,22 @@ const AddIngredientForm = ({ onAdd }) => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [unit, setUnit] = useState('gramm');
+    const [loading, setLoading] = useState(false);
+
+    const override = {
+        display: 'block',
+        margin: '0 auto',
+        marginTop: '8px',
+    };
 
     // Search API for products
     const handleSearch = async (e) => {
         const query = e.target.value;
         setSearchTerm(query);
-
+        if (!query) {
+            return;
+        }
+        setLoading(true);
         if (query.length > 2) {
             const baseUrl =
                 import.meta.env.VITE_FOOD_FACTS_URL ||
@@ -29,6 +41,8 @@ const AddIngredientForm = ({ onAdd }) => {
             } catch (err) {
                 console.error('Search error:', err);
                 setSuggestions([]);
+            } finally {
+                setLoading(false);
             }
         } else {
             setSuggestions([]);
@@ -47,7 +61,7 @@ const AddIngredientForm = ({ onAdd }) => {
             displayQuantity: quantity,
             displayUnit: unit,
         });
-
+        toast.success('Zutat hinzugefügt!');
         // Reset Form
         setSelectedProduct(null);
         setSearchTerm('');
@@ -59,8 +73,14 @@ const AddIngredientForm = ({ onAdd }) => {
             <h4 className="font-bold mb-4">Zutat hinzufügen:</h4>
 
             {/* 1. Search Input */}
+            <label htmlFor="ingredient-search" className="sr-only">
+                Suche Produkte
+            </label>
             <input
                 type="text"
+                id="ingredient-search"
+                name="ingredient-search"
+                autoComplete="off"
                 placeholder="Suche Produkte..."
                 value={searchTerm}
                 onChange={handleSearch}
@@ -68,18 +88,28 @@ const AddIngredientForm = ({ onAdd }) => {
             />
 
             {/* 2. Suggestions Dropdown */}
-            {suggestions.length > 0 && !selectedProduct && (
-                <ul className="suggestions pt-4">
-                    {suggestions.map((p) => (
-                        <li
-                            key={p.code}
-                            onClick={() => setSelectedProduct(p)}
-                            style={{ cursor: 'pointer' }}
-                        >
-                            {p.product_name}
-                        </li>
-                    ))}
-                </ul>
+            {loading ? (
+                <ClipLoader
+                    color="#36d7b7"
+                    loading={loading}
+                    cssOverride={override}
+                    size={50}
+                />
+            ) : (
+                suggestions.length > 0 &&
+                !selectedProduct && (
+                    <ul className="suggestions pt-4">
+                        {suggestions.map((p) => (
+                            <li
+                                key={p.code}
+                                onClick={() => setSelectedProduct(p)}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                {p.product_name}
+                            </li>
+                        ))}
+                    </ul>
+                )
             )}
 
             {/* 3. Quantity and Unit Selection */}
@@ -88,14 +118,26 @@ const AddIngredientForm = ({ onAdd }) => {
                     <p>
                         Auswahl: <strong>{selectedProduct.product_name}</strong>
                     </p>
+                    <label htmlFor="ingredient-quantity" className="sr-only">
+                        Menge
+                    </label>
                     <input
                         type="number"
+                        id="ingredient-quantity"
+                        name="quantity"
+                        autoComplete="off"
                         value={quantity}
                         onChange={(e) => setQuantity(Number(e.target.value))}
                         style={{ width: '60px' }}
                         className="input"
                     />
+                    <label htmlFor="ingredient-unit" className="sr-only">
+                        Einheit
+                    </label>
                     <select
+                        id="ingredient-unit"
+                        name="unit"
+                        autoComplete="off"
                         value={unit}
                         onChange={(e) => setUnit(e.target.value)}
                         className="input text-end w-1/8"
