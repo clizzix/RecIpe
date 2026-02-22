@@ -49,7 +49,11 @@ const SearchIngredients = () => {
                     placeholder="Suche (Mehl, Tomate...)"
                     className="input input-bordered min-w-xl md:w-auto"
                 />
-                <button onClick={fetchIngredient} className="btn btn-accent">
+                <button
+                    onClick={fetchIngredient}
+                    className="btn btn-accent"
+                    disabled={loading}
+                >
                     <MdSearch size={24} />
                 </button>
             </div>

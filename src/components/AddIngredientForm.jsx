@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MdAdd } from 'react-icons/md';
 import { convertToGrams } from '../services/utils';
 import IngredientCard from './IngredientCard';
@@ -19,34 +19,51 @@ const AddIngredientForm = ({ onAdd }) => {
         marginTop: '8px',
     };
 
-    // Search API for products
-    const handleSearch = async (e) => {
-        const query = e.target.value;
-        setSearchTerm(query);
-        if (!query) {
-            return;
-        }
-        setLoading(true);
-        if (query.length > 2) {
+    useEffect(() => {
+        const controller = new AbortController();
+        const signal = controller.signal;
+
+        const fetchProducts = async () => {
+            if (!searchTerm || searchTerm.length <= 2) {
+                setSuggestions([]);
+                setLoading(false);
+                return;
+            }
+
+            setLoading(true);
             const baseUrl =
                 import.meta.env.VITE_FOOD_FACTS_URL ||
                 'https://world.openfoodfacts.org';
-            const url = `${baseUrl}/cgi/search.pl?search_terms=${query}&search_simple=1&action=process&fields=product_name,nutriments,image_front_small_url,code&json=1&page_size=5`;
+            const url = `${baseUrl}/cgi/search.pl?search_terms=${searchTerm}&search_simple=1&action=process&fields=product_name,nutriments,image_front_small_url,code&json=1&page_size=5`;
 
             try {
-                const res = await fetch(url);
+                const res = await fetch(url, { signal });
                 if (!res.ok) throw new Error(`API Error: ${res.status}`);
                 const data = await res.json();
                 setSuggestions(data.products || []);
             } catch (err) {
-                console.error('Search error:', err);
-                setSuggestions([]);
+                if (err.name !== 'AbortError') {
+                    console.error('Search error:', err);
+                    setSuggestions([]);
+                    toast.error(`Fehler bei der Suche: ${err.message}`);
+                }
             } finally {
-                setLoading(false);
+                if (!signal.aborted) setLoading(false);
             }
-        } else {
-            setSuggestions([]);
-        }
+        };
+
+        const debounceTimeout = setTimeout(fetchProducts, 500);
+
+        return () => {
+            clearTimeout(debounceTimeout);
+            controller.abort();
+        };
+    }, [searchTerm]);
+
+    // Search API for products
+    const handleSearch = (e) => {
+        setSearchTerm(e.target.value);
+        setSelectedProduct(null);
     };
 
     const handleAddItem = () => {
