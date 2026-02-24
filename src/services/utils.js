@@ -20,3 +20,22 @@ export const convertToGrams = (quantity, unit) => {
     const factor = UNIT_CONVERSIONS[unit.toLowerCase()] || 1;
     return quantity * factor;
 };
+
+export const validate = ({ name, age, email, calories, weight }) => {
+    const newErrors = {};
+    if (!name || !name.toString().trim()) newErrors.name = 'Name ist benötigt.';
+    if (!age || !age.toString().trim())
+        newErrors.age = 'Bitte trage dein Alter ein.';
+    if (!email || !email.toString().trim()) {
+        newErrors.email = 'Email ist benötigt.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        newErrors.email = 'Ungültiges E-Mail Format!';
+    }
+    if (!calories || !calories.toString().trim())
+        newErrors.calories = 'Tägliche Kalorienangabe wird benötigt.';
+    if (!weight || !weight.toString().trim())
+        newErrors.weight = 'Gib bitte dein aktuelles Gewicht an!';
+    return newErrors;
+};
+
+export const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
