@@ -9,14 +9,20 @@ const RecipeBuilder = () => {
     const [recipeIngredients, setRecipeIngredients] = useState(
         JSON.parse(localStorage.getItem('myRecipe') || '[]'),
     );
-    const [imagePreview, setImagePreview] = useState(null);
+    const [recipeName, setRecipeName] = useState(
+        localStorage.getItem('recipeName') || '',
+    );
+    const [imagePreview, setImagePreview] = useState(
+        localStorage.getItem('recipeImage') || null,
+    );
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setImagePreview(reader.result);
+                const base64String = reader.result;
+                setImagePreview(base64String);
             };
             reader.readAsDataURL(file);
         }
@@ -24,7 +30,10 @@ const RecipeBuilder = () => {
 
     const removeImage = () => {
         setImagePreview(null);
-        document.getElementById('recipe-image-input').value = '';
+        localStorage.removeItem('recipeImage');
+        if (document.getElementById('recipe-image-input')) {
+            document.getElementById('recipe-image-input').value = '';
+        }
     };
 
     const addIngredientToRecipe = (newIngredient) => {
@@ -33,7 +42,7 @@ const RecipeBuilder = () => {
 
     const removeIngredient = (indexToRemove) => {
         setRecipeIngredients((prevIngredients) =>
-            prevIngredients.filter((_, index) => index !== indexToRemove),
+            prevIngredients.filter((_, i) => i !== indexToRemove),
         );
         toast.error('Zutat entfernt!');
     };
@@ -54,151 +63,166 @@ const RecipeBuilder = () => {
         );
     };
 
-    const clearAllIngredients = () => {
-        if (recipeIngredients.length === 0) return;
-
-        if (
-            window.confirm(
-                'Bist du sicher, dass du die ganze Liste löschen möchtest=',
-            )
-        ) {
-            setRecipeIngredients([]);
-            setImagePreview(null);
-            toast.info('Liste wurde geleert!', {
-                position: 'bottom-right',
-                autoClose: 2000,
-                theme: 'dark',
-            });
-        }
+    const clearAll = () => {
+        if (!window.confirm('Alles löschen?')) return;
+        setRecipeIngredients([]);
+        setRecipeName('');
+        removeImage();
+        toast.info('Alles geleert!');
     };
 
     useEffect(() => {
         localStorage.setItem('myRecipe', JSON.stringify(recipeIngredients));
-    }, [recipeIngredients]);
+        localStorage.setItem('recipeName', recipeName);
+        if (imagePreview) localStorage.setItem('recipeImage', imagePreview);
+    }, [recipeIngredients, recipeName, imagePreview]);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!recipeName || recipeIngredients.length === 0) {
+            return toast.warning('Bitte Namen angeben und Zutaten hinzufügen!');
+        }
+        const finalRecipe = {
+            id: Date.now(),
+            name: recipeName,
+            image: imagePreview,
+            ingredients: recipeIngredients,
+            createdAt: new Date().toISOString(),
+        };
+
+        console.log('Rezept bereit zum Speichern:', finalRecipe);
+
+        const history = JSON.parse(
+            localStorage.getItem('recipeHistory') || '[]',
+        );
+        localStorage.setItem(
+            'recipeHistory',
+            JSON.stringify([finalRecipe, ...history]),
+        );
+        toast.success(`"${recipeName}" wurde im Rezeptblock gespeichert!`);
+    };
 
     return (
         <div className="flex flex-col bg-base-300 max-w-5xl mx-auto p-8 gap-4 rounded-md shadow-md">
-            <h1 className="font-extrabold text-3xl">Rezeptblock</h1>
-            <form className="bg-base-100 p-4 flex flex-col items-center gap-4">
-                <label
-                    htmlFor="picture"
-                    className="self-start font-bold text-lg"
+            <div className="flex justify-between items-center">
+                <h1 className="font-extrabold text-3xl">Rezeptblock</h1>
+                <button
+                    onClick={clearAll}
+                    className="btn btn-ghost btn-sm text-error"
                 >
-                    Lade ein Bild deiner Mahlzeit hoch!
-                </label>
-                <input
-                    id="recipe-image-input"
-                    name="picture"
-                    type="file"
-                    className="file-input file-input-bordered file-input-accent w-full"
-                    onChange={handleImageChange}
-                />
-
-                {imagePreview && (
-                    <div className="relative w-full max-w-md mt-2">
-                        <img
-                            src={imagePreview}
-                            alt="Preview"
-                            className="rounded-lg w-full h-64 object-cover shadow-md border-4 border-accent"
-                        />
-                        <button
-                            onClick={removeImage}
-                            className="btn btn-circle btn-error btn-sm absolute -top-2 -right-2 shadow-lg"
-                        >
-                            x
-                        </button>
-                    </div>
-                )}
-                <input
-                    id="name"
-                    type="text"
-                    name="name"
-                    autoComplete="off"
-                    placeholder="Rezeptname"
-                    className="input w-full"
-                />
-            </form>
-
-            <AddIngredientForm onAdd={addIngredientToRecipe} />
-            <div className="flex justify-between items-center mb-4">
-                <h3 className="font-bold text-xl">Zutaten</h3>
-                {recipeIngredients.length > 0 && (
-                    <button
-                        onClick={clearAllIngredients}
-                        className="btn btn-outline btn-error btn-sm"
-                    >
-                        Liste leeren
-                    </button>
-                )}
+                    Neustart
+                </button>
             </div>
-            <div>
-                <ul style={{ listStyle: 'none', padding: 0 }}>
-                    {recipeIngredients.map((ing, i) => (
-                        <li
-                            key={i}
-                            className="flex justify-between items-center p-4 border-b border-base-100 bg-base-200 rounded-lg mb-2"
-                        >
-                            <div className="flex flex-col gap-1">
-                                <strong className="text-lg">
-                                    {ing.product_name}
-                                </strong>
-                                <div className="join items-center">
-                                    <input
-                                        type="number"
-                                        className="input input-bordered input-sm w-20 join-item"
-                                        value={ing.displayQuantity}
-                                        onChange={(e) =>
-                                            updateIngredient(i, {
-                                                displayQuantity: Number(
-                                                    e.target.value,
-                                                ),
-                                            })
-                                        }
-                                    />
-                                    <select
-                                        className="select select-bordered select-sm join-item"
-                                        value={ing.displayUnit}
-                                        onChange={(e) =>
-                                            updateIngredient(i, {
-                                                displayUnit: e.target.value,
-                                            })
-                                        }
-                                    >
-                                        <option value="gramm">g</option>
-                                        <option value="cups">Tassen</option>
-                                        <option value="tablespoon">
-                                            Teelöffel
-                                        </option>
-                                        <option value="oz">Unzen</option>
-                                    </select>
-                                    <span className="bg-base-100 px-3 py-1 text-xs font-semibold join-item border border-base-300">
-                                        {ing.displayUnit}
+            <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+                <div className="bg-base-100 p-6 rounded-xl shadow-sm flex flex-col gap-4">
+                    <input
+                        type="text"
+                        placeholder="Wie heißt dein Gericht?"
+                        className="input input-bordered input-lg w-full font-bold"
+                        value={recipeName}
+                        onChange={(e) => setRecipeName(e.target.value)}
+                    />
+                    <div className="flex flex-col items-center gap-4">
+                        {!imagePreview ? (
+                            <div className="form-control w-full">
+                                <label className="label">
+                                    <span className="label-text font-bold">
+                                        Foto hinzufügen
                                     </span>
-                                </div>
+                                </label>
+                                <input
+                                    id="recipe-image-input"
+                                    type="file"
+                                    accept="image/*"
+                                    className="file-input file-input-bordered file-input-accent w-full"
+                                    onChange={handleImageChange}
+                                />
                             </div>
-
-                            <button
-                                onClick={() => removeIngredient(i)}
-                                className="btn btn-ghost btn-circle text-error"
+                        ) : (
+                            <div className="relative group">
+                                <img
+                                    src={imagePreview}
+                                    alt="Preview"
+                                    className="rounded-lg w-full max-h-80 object-cover shadow-lg border-4 border-accent"
+                                />
+                                <button
+                                    onClick={removeImage}
+                                    className="btn btn-circle btn-error btn-sm absolute -top-2 -right-2"
+                                >
+                                    x
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+                <AddIngredientForm onAdd={addIngredientToRecipe} />
+                <div className="bg-base-100 p-6 rounded-xl shadow-sm">
+                    <h3 className="font-bold text-xl mb-4">Deine Zutaten</h3>
+                    <ul className="space-y-3">
+                        {recipeIngredients.map((ing, i) => (
+                            <li
+                                key={i}
+                                className="flex justify-between items-center p-3 bg-base-200 rounded-lg"
                             >
-                                <MdDelete size={24} />
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-
-                {recipeIngredients.length === 0 && (
-                    <p>
-                        Keine Zutaten hinzugefügt! Wähle oben deine Nahrung
-                        aus...
-                    </p>
-                )}
-            </div>
-
-            <RecipeSummary ingredients={recipeIngredients} />
-            <button type="submit" className="btn btn-accent m-2">
-                Submit
-            </button>
+                                <div>
+                                    <p className="font-bold">
+                                        {ing.product_name}
+                                    </p>
+                                    <div className="join mt-1">
+                                        <input
+                                            type="number"
+                                            className="input input-bordered input-xs w-16 join-item"
+                                            value={ing.displayQuantity}
+                                            onChange={(e) =>
+                                                updateIngredient(i, {
+                                                    displayQuantity: Number(
+                                                        e.target.value,
+                                                    ),
+                                                })
+                                            }
+                                        />
+                                        <select
+                                            className="select select-bordered select-xs join-item"
+                                            value={ing.displayUnit}
+                                            onChange={(e) =>
+                                                updateIngredient(i, {
+                                                    displayUnit: e.target.value,
+                                                })
+                                            }
+                                        >
+                                            <option value="gram">g</option>
+                                            <option value="cup">Tassen</option>
+                                            <option value="tablespoon">
+                                                EL
+                                            </option>
+                                            <option value="oz">oz</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => removeIngredient(i)}
+                                    className="btn btn-ghost btn-circle text-error"
+                                >
+                                    <MdDelete size={20} />
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                    {recipeIngredients.length === 0 && (
+                        <p className="text-center opacity-50 my-4">
+                            Noch keine Zutaten...
+                        </p>
+                    )}
+                </div>
+                <RecipeSummary ingredients={recipeIngredients} />
+                <button
+                    type="submit"
+                    className="btn btn-accent btn-lg shadow-lg"
+                >
+                    Rezept Speichern
+                </button>
+            </form>
         </div>
     );
 };

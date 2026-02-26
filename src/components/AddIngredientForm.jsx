@@ -154,10 +154,9 @@ const AddIngredientForm = ({ onAdd }) => {
                     <select
                         id="ingredient-unit"
                         name="unit"
-                        autoComplete="off"
                         value={unit}
                         onChange={(e) => setUnit(e.target.value)}
-                        className="input text-end w-1/8"
+                        className="select select-bordered"
                     >
                         <option value="gram">Gramm (g)</option>
                         <option value="cup">Tassen</option>

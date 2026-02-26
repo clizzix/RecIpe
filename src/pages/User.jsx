@@ -83,7 +83,7 @@ const User = () => {
                         onChange={handleChange}
                         value={formData.age}
                     />
-                    {errors.name && (
+                    {errors.age && (
                         <span className="text-error text-sm">{errors.age}</span>
                     )}
                 </div>
@@ -100,7 +100,7 @@ const User = () => {
                         onChange={handleChange}
                         value={formData.email}
                     />
-                    {errors.name && (
+                    {errors.email && (
                         <span className="text-error text-sm">
                             {errors.email}
                         </span>
@@ -118,7 +118,7 @@ const User = () => {
                         onChange={handleChange}
                         value={formData.calories}
                     />
-                    {errors.name && (
+                    {errors.calories && (
                         <span className="text-error text-sm">
                             {errors.calories}
                         </span>
@@ -137,7 +137,7 @@ const User = () => {
                         onChange={handleChange}
                         value={formData.weight}
                     />
-                    {errors.name && (
+                    {errors.weight && (
                         <span className="text-error text-sm">
                             {errors.weight}
                         </span>
