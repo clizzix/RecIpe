@@ -158,10 +158,13 @@ const AddIngredientForm = ({ onAdd }) => {
                         onChange={(e) => setUnit(e.target.value)}
                         className="select select-bordered"
                     >
-                        <option value="gram">Gramm (g)</option>
+                        <option value="gramm">g</option>
+                        <option value="kg">kg</option>
+                        <option value="ml">ml</option>
                         <option value="cup">Tassen</option>
-                        <option value="tablespoon">Teelöffel</option>
-                        <option value="oz">Unzen (oz)</option>
+                        <option value="tablespoon">EL</option>
+                        <option value="teaspoon">TL</option>
+                        <option value="oz">oz</option>
                     </select>
                     <button className="btn btn-primary" onClick={handleAddItem}>
                         <MdAdd />
