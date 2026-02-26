@@ -144,7 +144,7 @@ const User = () => {
                     )}
                 </div>
                 <button type="submit" className="btn btn-accent self-end">
-                    Submit
+                    Speichern
                 </button>
             </form>
         </div>
